@@ -1,0 +1,22 @@
+[package]
+name = "agentwatch-web"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Local web dashboard for agentwatch (axum + embedded preact/chart.js)."
+
+[dependencies]
+agentwatch-core = { workspace = true }
+agentwatch-store = { workspace = true }
+axum = { workspace = true }
+tower-http = { workspace = true }
+tokio = { workspace = true }
+rust-embed = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+uuid = { workspace = true }

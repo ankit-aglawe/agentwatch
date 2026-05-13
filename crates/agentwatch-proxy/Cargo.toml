@@ -1,0 +1,16 @@
+[package]
+name = "agentwatch-proxy"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Opt-in HTTP proxy mode that captures usage from direct Anthropic/OpenAI/Google API calls via response headers."
+
+[dependencies]
+agentwatch-core = { workspace = true }
+hyper = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }

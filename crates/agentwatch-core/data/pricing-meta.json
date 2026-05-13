@@ -1,0 +1,7 @@
+{
+  "snapshot_date": "2026-05-12",
+  "source_url": "https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json",
+  "source_commit": "embedded-subset-v0.1",
+  "model_count": 21,
+  "note": "Hand-curated subset for v0.1. CI refresh workflow will replace this with the full LiteLLM JSON post-launch."
+}

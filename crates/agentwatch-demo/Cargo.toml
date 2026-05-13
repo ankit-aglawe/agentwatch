@@ -1,0 +1,21 @@
+[package]
+name = "agentwatch-demo"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Deterministic synthetic-data generator for agentwatch demo mode (cherry-pick E1)."
+
+[dependencies]
+agentwatch-core = { workspace = true }
+agentwatch-store = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+serde_json = { workspace = true }
+fastrand = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"

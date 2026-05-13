@@ -1,0 +1,36 @@
+/target
+**/*.rs.bk
+Cargo.lock.bak
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Local config
+.env
+.env.local
+
+# Test artifacts
+*.snap.new
+tests/output/
+
+# Build outputs
+dist/
+
+# Local SQLite for manual testing
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# gstack ephemeral
+.gstack/
+
+# Claude Code working dir
+.claude/
+
+# Internal planning docs — kept local, not published
+PLAN.md
+PLAN-*.md

@@ -1,0 +1,16 @@
+[package]
+name = "agentwatch-summary"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Weekly/monthly markdown narrative summaries (cherry-pick E3)."
+
+[dependencies]
+agentwatch-core = { workspace = true }
+agentwatch-store = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }

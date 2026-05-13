@@ -1,0 +1,32 @@
+[package]
+name = "agentwatch-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "agentwatch — htop for your AI coding agents."
+
+[[bin]]
+name = "agentwatch"
+path = "src/main.rs"
+
+[dependencies]
+agentwatch-core = { workspace = true }
+agentwatch-adapters = { workspace = true }
+agentwatch-store = { workspace = true }
+agentwatch-tui = { workspace = true }
+agentwatch-web = { workspace = true }
+agentwatch-proxy = { workspace = true }
+agentwatch-demo = { workspace = true }
+agentwatch-summary = { workspace = true }
+clap = { workspace = true }
+tokio = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tracing-appender = { workspace = true }
+directories-next = { workspace = true }
+chrono = { workspace = true }
+serde_json = { workspace = true }

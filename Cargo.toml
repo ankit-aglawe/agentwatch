@@ -1,0 +1,88 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/agentwatch-core",
+    "crates/agentwatch-adapters",
+    "crates/agentwatch-store",
+    "crates/agentwatch-tui",
+    "crates/agentwatch-web",
+    "crates/agentwatch-proxy",
+    "crates/agentwatch-demo",
+    "crates/agentwatch-summary",
+    "crates/agentwatch-cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+license = "MIT"
+repository = "https://github.com/ankit-aglawe/agentwatch"
+authors = ["Ankit <aglawe.ankit@gmail.com>"]
+
+[workspace.dependencies]
+# Shared core
+agentwatch-core = { path = "crates/agentwatch-core" }
+agentwatch-adapters = { path = "crates/agentwatch-adapters" }
+agentwatch-store = { path = "crates/agentwatch-store" }
+agentwatch-tui = { path = "crates/agentwatch-tui" }
+agentwatch-web = { path = "crates/agentwatch-web" }
+agentwatch-proxy = { path = "crates/agentwatch-proxy" }
+agentwatch-demo = { path = "crates/agentwatch-demo" }
+agentwatch-summary = { path = "crates/agentwatch-summary" }
+
+# Async + runtime
+tokio = { version = "1.40", features = ["rt-multi-thread", "macros", "fs", "io-util", "sync", "time", "signal"] }
+futures = "0.3"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Errors
+thiserror = "1"
+anyhow = "1"
+
+# Time + ids
+chrono = { version = "0.4", features = ["serde", "clock"] }
+uuid = { version = "1", features = ["v4", "v5", "serde"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+
+# CLI
+clap = { version = "4", features = ["derive", "env"] }
+
+# Storage
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Filesystem
+notify = "6"
+directories-next = "2"
+
+# Platform
+libc = "0.2"
+
+# Random / determinism
+fastrand = "2"
+
+# TUI
+ratatui = "0.28"
+crossterm = "0.28"
+
+# Web
+axum = "0.7"
+tower-http = { version = "0.5", features = ["fs", "trace", "cors"] }
+hyper = { version = "1", features = ["full"] }
+rust-embed = { version = "8", features = ["debug-embed"] }
+
+# Testing
+insta = { version = "1", features = ["json"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = true
