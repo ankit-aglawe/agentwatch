@@ -4,18 +4,27 @@
   <defs>
     <linearGradient id="brand-b0" gradientUnits="userSpaceOnUse"
                     x1="0" y1="20" x2="0" y2="152">
-      <stop offset="0%"   stop-color="#c4ecc0"/>
-      <stop offset="100%" stop-color="#6fb266"/>
+      <stop offset="0%" stop-color="#fab387"/>
+      <stop offset="25%" stop-color="#e1a17a"/>
+      <stop offset="50%" stop-color="#c88f6c"/>
+      <stop offset="75%" stop-color="#af7d5f"/>
+      <stop offset="100%" stop-color="#966b51"/>
     </linearGradient>
     <linearGradient id="brand-b1" gradientUnits="userSpaceOnUse"
                     x1="0" y1="174" x2="0" y2="306">
-      <stop offset="0%"   stop-color="#c4ecc0"/>
-      <stop offset="100%" stop-color="#6fb266"/>
+      <stop offset="0%" stop-color="#fab387"/>
+      <stop offset="25%" stop-color="#e1a17a"/>
+      <stop offset="50%" stop-color="#c88f6c"/>
+      <stop offset="75%" stop-color="#af7d5f"/>
+      <stop offset="100%" stop-color="#966b51"/>
     </linearGradient>
     <linearGradient id="brand-b2" gradientUnits="userSpaceOnUse"
                     x1="0" y1="328" x2="0" y2="350">
-      <stop offset="0%"   stop-color="#c4ecc0"/>
-      <stop offset="100%" stop-color="#6fb266"/>
+      <stop offset="0%" stop-color="#fab387"/>
+      <stop offset="25%" stop-color="#e1a17a"/>
+      <stop offset="50%" stop-color="#c88f6c"/>
+      <stop offset="75%" stop-color="#af7d5f"/>
+      <stop offset="100%" stop-color="#966b51"/>
     </linearGradient>
     <style>
       text {
@@ -32,13 +41,13 @@
   <text x="24" y="102" fill="url(#brand-b0)" xml:space="preserve">                                █▌ █▘   ▜█▄▄██ █▘   ▐█</text>
   <text x="24" y="124" fill="url(#brand-b0)" xml:space="preserve">                                ▜█▖    ▗█▌  ▐█▖    ▗█▛</text>
   <text x="24" y="146" fill="url(#brand-b0)" xml:space="preserve">                                 ▝▜████▀▘    ▝▀████▛▘</text>
-  <text x="24" y="168" fill="#c4ecc0" xml:space="preserve"> </text>
+  <text x="24" y="168" fill="#fab387" xml:space="preserve"> </text>
   <text x="24" y="190" fill="url(#brand-b1)" xml:space="preserve"> █████╗  ██████╗ ███████╗███╗   ██╗████████╗██╗    ██╗ █████╗ ████████╗ ██████╗██╗  ██╗</text>
   <text x="24" y="212" fill="url(#brand-b1)" xml:space="preserve">██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██║    ██║██╔══██╗╚══██╔══╝██╔════╝██║  ██║</text>
   <text x="24" y="234" fill="url(#brand-b1)" xml:space="preserve">███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ██║ █╗ ██║███████║   ██║   ██║     ███████║</text>
   <text x="24" y="256" fill="url(#brand-b1)" xml:space="preserve">██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ██║███╗██║██╔══██║   ██║   ██║     ██╔══██║</text>
   <text x="24" y="278" fill="url(#brand-b1)" xml:space="preserve">██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ╚███╔███╔╝██║  ██║   ██║   ╚██████╗██║  ██║</text>
   <text x="24" y="300" fill="url(#brand-b1)" xml:space="preserve">╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝</text>
-  <text x="24" y="322" fill="#c4ecc0" xml:space="preserve"> </text>
+  <text x="24" y="322" fill="#fab387" xml:space="preserve"> </text>
   <text x="24" y="344" fill="url(#brand-b2)" xml:space="preserve">                     htop for AI coding agents  ·  local-first  ·  MIT</text>
 </svg>

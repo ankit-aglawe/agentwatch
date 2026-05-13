@@ -19,10 +19,15 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC  = ROOT / "assets" / "logo.txt"
 DST  = ROOT / "assets" / "banner.svg"
 
-# Brand gradient - must match the constants in
-# crates/agentwatch-cli/src/main.rs (GRADIENT_TOP / GRADIENT_BOTTOM).
-TOP_COLOR    = "#c4ecc0"   # light green (top of each letter)
-BOTTOM_COLOR = "#6fb266"   # deep green  (bottom of each letter)
+# Brand gradient - 5-stop peach sweep. Must match GRADIENT_STOPS in
+# crates/agentwatch-cli/src/main.rs.
+GRADIENT_STOPS = [
+    (0,   "#fab387"),   # top: light peach (Mocha Peach)
+    (25,  "#e1a17a"),
+    (50,  "#c88f6c"),
+    (75,  "#af7d5f"),
+    (100, "#966b51"),   # bottom: deep sienna
+]
 
 # Tuned for SF Mono / JetBrains Mono at 16px - GitHub's monospace metrics.
 CHAR_W   = 9.6
@@ -62,13 +67,16 @@ def main() -> None:
         for i in idxs:
             line_to_block[i] = bi
 
+    stops_xml = "\n      ".join(
+        f'<stop offset="{pct}%" stop-color="{color}"/>'
+        for pct, color in GRADIENT_STOPS
+    )
     gradients = []
     for bi, (y_top, y_bottom) in block_y.items():
         gradients.append(
             f'<linearGradient id="brand-b{bi}" gradientUnits="userSpaceOnUse"\n'
             f'                    x1="0" y1="{y_top}" x2="0" y2="{y_bottom}">\n'
-            f'      <stop offset="0%"   stop-color="{TOP_COLOR}"/>\n'
-            f'      <stop offset="100%" stop-color="{BOTTOM_COLOR}"/>\n'
+            f'      {stops_xml}\n'
             f'    </linearGradient>'
         )
 
@@ -79,7 +87,7 @@ def main() -> None:
         fill = (
             f'url(#brand-b{line_to_block[idx]})'
             if idx in line_to_block
-            else TOP_COLOR
+            else GRADIENT_STOPS[0][1]
         )
         tspans.append(
             f'<text x="{PAD_X}" y="{y}" fill="{fill}" xml:space="preserve">{text}</text>'

@@ -255,14 +255,33 @@ async fn main() -> Result<()> {
 const BANNER_FULL: &str = include_str!("../../../assets/logo.txt");
 const BANNER_MINI: &str = include_str!("../../../assets/logo-mini.txt");
 
-// Brand gradient: subtle vertical green sweep, taken from the TUI's "agent
-// active" bar color (Catppuccin Mocha Green #a6e3a1). Per-block, bottom-up:
-// each contiguous text block (logo, wordmark, tagline) gets its own
-// top-to-bottom sweep so the gradient repeats per letter instead of stretching
-// across the whole banner.
-const GRADIENT_TOP:    (u8, u8, u8) = (0xc4, 0xec, 0xc0); // light green (top of letter)
-const GRADIENT_BOTTOM: (u8, u8, u8) = (0x6f, 0xb2, 0x66); // deep green (bottom of letter)
+// Brand gradient: 5-stop vertical peach sweep. Light Catppuccin Mocha Peach
+// (#fab387) at the top of every letter, progressively deepening to a warm
+// sienna (#966b51) at the bottom. Applied per-block (logo, wordmark, tagline)
+// so the gradient repeats per letter instead of stretching across the whole
+// banner.
+const GRADIENT_STOPS: &[(f32, (u8, u8, u8))] = &[
+    (0.00, (0xfa, 0xb3, 0x87)), // top: light peach (Mocha Peach)
+    (0.25, (0xe1, 0xa1, 0x7a)),
+    (0.50, (0xc8, 0x8f, 0x6c)),
+    (0.75, (0xaf, 0x7d, 0x5f)),
+    (1.00, (0x96, 0x6b, 0x51)), // bottom: deep sienna
+];
 const RESET: &str = "\x1b[0m";
+
+/// Sample the multi-stop gradient at t in [0,1].
+fn sample_gradient(t: f32) -> (u8, u8, u8) {
+    let t = t.clamp(0.0, 1.0);
+    for w in GRADIENT_STOPS.windows(2) {
+        let (t0, c0) = w[0];
+        let (t1, c1) = w[1];
+        if t <= t1 {
+            let local_t = if t1 > t0 { (t - t0) / (t1 - t0) } else { 0.0 };
+            return lerp_rgb(c0, c1, local_t);
+        }
+    }
+    GRADIENT_STOPS.last().unwrap().1
+}
 
 fn print_banner(mini: bool) {
     use std::io::IsTerminal;
@@ -309,7 +328,7 @@ fn paint_block(block: &[&str], out: &mut String) {
         } else {
             0.0
         };
-        let (r, g, b) = lerp_rgb(GRADIENT_TOP, GRADIENT_BOTTOM, t);
+        let (r, g, b) = sample_gradient(t);
         // One color per row - every char in this row gets it. This is the
         // bottom-up gradient: row 0 = light (top of letter), row N = dark.
         out.push_str(&format!("\x1b[38;2;{};{};{}m", r, g, b));
