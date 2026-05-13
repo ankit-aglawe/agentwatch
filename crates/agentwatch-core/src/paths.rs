@@ -1,7 +1,7 @@
 //! Cross-platform path helpers.
 //!
 //! Uses XDG on Linux, `~/Library/Application Support/agentwatch` on macOS,
-//! `%APPDATA%\agentwatch` on Windows — all via `directories-next` so we never
+//! `%APPDATA%\agentwatch` on Windows - all via `directories-next` so we never
 //! hand-construct platform-specific paths.
 
 use std::path::PathBuf;
@@ -46,7 +46,7 @@ pub fn log_dir() -> PathBuf {
     PathBuf::from(".agentwatch").join("log")
 }
 
-/// User's $HOME — the root we resolve all adapter session paths against.
+/// User's $HOME - the root we resolve all adapter session paths against.
 pub fn home_dir() -> Option<PathBuf> {
     directories_next::BaseDirs::new().map(|b| b.home_dir().to_path_buf())
 }

@@ -1,6 +1,6 @@
 # Recording the agentwatch demo
 
-We use [VHS](https://github.com/charmbracelet/vhs) — a declarative,
+We use [VHS](https://github.com/charmbracelet/vhs) - a declarative,
 reproducible terminal recorder. Re-runs against the latest TUI without
 manual re-takes.
 
@@ -29,15 +29,15 @@ vhs vhs/demo.tape
 ```
 
 Outputs land in `assets/`:
-- `demo.gif` — for README + Twitter
-- `demo.mp4` — for HN / longer-form
-- `demo.webm` — for landing page
+- `demo.gif` - for README + Twitter
+- `demo.mp4` - for HN / longer-form
+- `demo.webm` - for landing page
 
 ## Why VHS over alternatives
 
 | Tool | Verdict |
 |---|---|
-| **VHS** | ✅ chosen — declarative `.tape` file, GIF + MP4 + WebM, reproducible |
+| **VHS** | ✅ chosen - declarative `.tape` file, GIF + MP4 + WebM, reproducible |
 | asciinema | great for "play in browser" but no embeddable GIF |
 | terminalizer | older, npm-based, fragile |
 | t-rec | screen-capture style, no scripted keystrokes |

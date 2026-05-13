@@ -55,7 +55,7 @@ pub fn populate(db_path: &Path, config: DemoConfig) -> Result<usize, DemoError> 
 }
 
 /// Generate the synthetic event stream without writing anything.
-/// Pure function — testable in isolation, deterministic with a seed.
+/// Pure function - testable in isolation, deterministic with a seed.
 pub fn generate_events(config: &DemoConfig) -> Vec<AgentEvent> {
     let mut rng = match config.seed {
         Some(s) => fastrand::Rng::with_seed(s),

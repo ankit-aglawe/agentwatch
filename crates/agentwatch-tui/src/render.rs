@@ -1,4 +1,4 @@
-//! Drawing the htop-style front page — Charm-style polish via ratatui's
+//! Drawing the htop-style front page - Charm-style polish via ratatui's
 //! first-class widgets.
 
 use chrono::{DateTime, Duration, Utc};
@@ -456,7 +456,7 @@ fn project_today_cost(today_cost: u64) -> u64 {
 
 fn delta_pct(now: u64, baseline: u64) -> (String, Color) {
     if baseline == 0 {
-        return ("—".to_string(), MOCHA_MUTED);
+        return ("-".to_string(), MOCHA_MUTED);
     }
     let diff = now as i64 - baseline as i64;
     let pct = (diff as f64 / baseline as f64 * 100.0).round() as i64;
@@ -646,7 +646,7 @@ fn loop_warning_height(app: &App) -> u16 {
 fn draw_agent_bars(f: &mut Frame, area: Rect, app: &App) {
     if app.agents.is_empty() {
         let para = Paragraph::new(Line::from(Span::styled(
-            "  (no agent activity in the last 5 hours — run agentwatch ingest or use Claude Code)",
+            "  (no agent activity in the last 5 hours - run agentwatch ingest or use Claude Code)",
             Style::default().fg(MOCHA_MUTED),
         )));
         f.render_widget(para, area);
@@ -723,7 +723,7 @@ fn draw_agent_row(f: &mut Frame, area: Rect, a: &AgentSummary, max_tokens: u64) 
     .alignment(Alignment::Right);
     f.render_widget(pct, cells[2]);
 
-    // "347.4k tokens / 5h window" — explicit so the unit is unambiguous.
+    // "347.4k tokens / 5h window" - explicit so the unit is unambiguous.
     let tokens = Paragraph::new(Line::from(vec![
         Span::styled(
             format_tokens(a.tokens_5h),
@@ -848,7 +848,7 @@ fn draw_metrics_line(f: &mut Frame, area: Rect, app: &App) {
         MOCHA_PEACH
     };
     let lat_display = if m.avg_latency_ms == 0 {
-        "—".to_string()
+        "-".to_string()
     } else {
         format!("{}ms", m.avg_latency_ms)
     };
@@ -971,7 +971,7 @@ fn draw_loop_warning(f: &mut Frame, area: Rect, app: &App) {
         ),
         Span::styled(
             format!(
-                "{} session{} stuck in a loop — est. ~{} tokens / {} wasted on retries",
+                "{} session{} stuck in a loop - est. ~{} tokens / {} wasted on retries",
                 loopers.len(),
                 if loopers.len() == 1 { "" } else { "s" },
                 format_tokens(wasted_tokens),
@@ -1075,7 +1075,7 @@ fn session_row(s: &SessionSummary, now: DateTime<Utc>) -> Row<'_> {
         SessionStatus::Done => (MOCHA_SURFACE, " "),
         SessionStatus::Looping => (MOCHA_PINK, "⚠"),
     };
-    // Context window % — per-session, capped at 100 since usage above the
+    // Context window % - per-session, capped at 100 since usage above the
     // window is technically impossible (Claude truncates older context).
     let ctx_window = model_context_window(&s.model);
     let ctx_pct = if ctx_window > 0 && s.peak_context > 0 {
@@ -1097,7 +1097,7 @@ fn session_row(s: &SessionSummary, now: DateTime<Utc>) -> Row<'_> {
         MOCHA_GREEN
     };
     let ctx_text = if s.peak_context == 0 {
-        "—".to_string()
+        "-".to_string()
     } else {
         format!("{}%", ctx_pct.min(999))
     };
@@ -1147,7 +1147,7 @@ fn session_row(s: &SessionSummary, now: DateTime<Utc>) -> Row<'_> {
         Cell::from(Span::styled(
             format!(" {star} {} ", s.status.label()),
             if matches!(s.status, SessionStatus::Looping) {
-                // Inverse video for proper alarm visibility — pink background,
+                // Inverse video for proper alarm visibility - pink background,
                 // dark foreground.
                 Style::default()
                     .bg(MOCHA_PINK)
@@ -1252,7 +1252,7 @@ fn draw_hot_files(f: &mut Frame, area: Rect, app: &App) {
     let mut lines: Vec<Line> = Vec::new();
     let entries_visible = ((inner.height as usize) / 2).max(1);
     for b in app.hot_files.iter().take(entries_visible) {
-        // File path row — uses full pane width.
+        // File path row - uses full pane width.
         lines.push(Line::from(Span::styled(
             truncate(&b.label, label_max),
             Style::default()
@@ -1441,11 +1441,11 @@ fn draw_bar_chart(
     let value_str_width = 9usize;
     let pct_width = 5usize;
     let (label_width, bar_width) = if is_path_heavy {
-        // Path data — labels are the point, bar is supporting.
+        // Path data - labels are the point, bar is supporting.
         let label = total_width.saturating_sub(8 + value_str_width + pct_width + 3).clamp(20, 45);
         (label, 8usize)
     } else {
-        // Short-label data — balanced.
+        // Short-label data - balanced.
         let label = (total_width / 3).clamp(10, 22);
         let bar = total_width
             .saturating_sub(label)

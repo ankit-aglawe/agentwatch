@@ -6,7 +6,7 @@ license.workspace = true
 rust-version.workspace = true
 repository.workspace = true
 authors.workspace = true
-description = "agentwatch — htop for your AI coding agents."
+description = "agentwatch - htop for your AI coding agents."
 
 [[bin]]
 name = "agentwatch"

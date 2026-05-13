@@ -2,7 +2,7 @@
 //!
 //! Hard-bound to `127.0.0.1` (Invariant: never `0.0.0.0`). Random URL token
 //! issued at boot, printed to the TUI / stdout. Token lives only for the
-//! lifetime of this `serve` invocation — rotating tokens limit screenshot
+//! lifetime of this `serve` invocation - rotating tokens limit screenshot
 //! leak risk.
 //!
 //! Read-only: the webapp never mutates SQLite. Settings live in

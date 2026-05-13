@@ -8,7 +8,7 @@
 //!
 //! Math: LiteLLM gives prices as USD per single token (float). We convert each
 //! field to integer microcents-per-million-tokens at parse time (once, cached
-//! in a `OnceLock`). All cost math at runtime is then integer-only — no float
+//! in a `OnceLock`). All cost math at runtime is then integer-only - no float
 //! drift, totals match vendor bills to the microcent.
 
 use std::collections::HashMap;
@@ -74,7 +74,7 @@ impl ModelPrice {
     }
 }
 
-/// Snapshot metadata — when the pricing data was last refreshed.
+/// Snapshot metadata - when the pricing data was last refreshed.
 #[derive(Debug, Clone, Deserialize)]
 pub struct PricingMeta {
     pub snapshot_date: String,
@@ -89,7 +89,7 @@ fn table() -> &'static HashMap<String, ModelPrice> {
     static CELL: OnceLock<HashMap<String, ModelPrice>> = OnceLock::new();
     CELL.get_or_init(|| {
         let raw: HashMap<String, serde_json::Value> = serde_json::from_str(PRICING_JSON)
-            .expect("embedded pricing.json must parse — broken at compile time");
+            .expect("embedded pricing.json must parse - broken at compile time");
         raw.into_iter()
             .filter_map(|(model, value)| {
                 if model.starts_with('_') {
@@ -136,15 +136,15 @@ fn usd_per_token_to_microcents_per_million(usd_per_token: f64) -> u64 {
     rounded as u64
 }
 
-/// Look up a model's pricing. Returns `None` for unknown models — the caller
+/// Look up a model's pricing. Returns `None` for unknown models - the caller
 /// must record $0 cost AND emit a warning event so the user knows pricing is
 /// missing (silent $0 would deceive). See `EventKind::Unknown`.
 ///
 /// Lookup is multi-stage:
 ///   1. Exact match (`claude-sonnet-4-6`)
-///   2. Prefix match — strip trailing `-YYYYMMDD` date suffix
+///   2. Prefix match - strip trailing `-YYYYMMDD` date suffix
 ///      (`claude-sonnet-4-5-20250929` → `claude-sonnet-4-5`)
-///   3. Family fallback — match on family stem
+///   3. Family fallback - match on family stem
 ///      (`claude-sonnet-4-5` → matches any `claude-sonnet-4-x` entry)
 ///
 /// This avoids having to enumerate every dated model variant in pricing.json.
@@ -230,7 +230,7 @@ pub fn snapshot_meta() -> &'static PricingMeta {
     static CELL: OnceLock<PricingMeta> = OnceLock::new();
     CELL.get_or_init(|| {
         serde_json::from_str(PRICING_META_JSON)
-            .expect("embedded pricing-meta.json must parse — broken at compile time")
+            .expect("embedded pricing-meta.json must parse - broken at compile time")
     })
 }
 

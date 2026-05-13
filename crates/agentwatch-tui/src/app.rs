@@ -29,7 +29,7 @@ pub struct App {
     pub live: Option<LiveSignal>,
     /// Largest input_tokens seen in the most-active session (proxy for context fill).
     pub top_session_context: u64,
-    /// Model used by that top session — drives the context-window cap.
+    /// Model used by that top session - drives the context-window cap.
     pub top_session_model: String,
     pub last_refreshed: DateTime<Utc>,
     pub db_present: bool,
@@ -54,7 +54,7 @@ impl App {
             week_tokens: 0,
             live: None,
             top_session_context: 0,
-            top_session_model: "—".into(),
+            top_session_model: "-".into(),
             last_refreshed: Utc::now(),
             db_present: agentwatch_core::paths::db_path().exists(),
         }
@@ -83,7 +83,7 @@ impl App {
         // Fetch enough sessions to fill any terminal. The render side caps to fit.
         self.sessions = reader.recent_sessions(50).unwrap_or_default();
 
-        // Hoisted: primary agent — used by sparkline, week_tokens, runway.
+        // Hoisted: primary agent - used by sparkline, week_tokens, runway.
         let primary_agent = self
             .latest
             .as_ref()
@@ -111,7 +111,7 @@ impl App {
             }
         }
 
-        // Headline runway state — still useful for compact mode and status line.
+        // Headline runway state - still useful for compact mode and status line.
         let now = Utc::now();
         let w5h = (now - Duration::hours(5)).timestamp_millis();
         let w30m = (now - Duration::minutes(30)).timestamp_millis();

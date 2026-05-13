@@ -3,14 +3,14 @@
 //! Harness tools (claude-mem, openclaw, hermes, etc.) typically observe the
 //! primary coding agent's activity and write it to their own log files. By
 //! scanning these, we get a near-instant signal of what the user is asking
-//! their agent right now — faster than the main session log which only
+//! their agent right now - faster than the main session log which only
 //! updates after the assistant responds.
 //!
 //! Architecture: each harness gets its own `LiveSignalSource` implementation.
 //! `read_latest()` polls them all and returns the freshest signal. Adding a
 //! new harness = one new module + register in `SOURCES`.
 //!
-//! Signals older than 5 minutes are discarded — they're historical, not live.
+//! Signals older than 5 minutes are discarded - they're historical, not live.
 
 use std::path::PathBuf;
 use std::time::SystemTime;
@@ -21,7 +21,7 @@ use chrono::{DateTime, Utc};
 pub struct LiveSignal {
     pub timestamp: DateTime<Utc>,
     pub user_prompt: String,
-    /// Which harness tool produced this signal — surfaced in the TUI banner.
+    /// Which harness tool produced this signal - surfaced in the TUI banner.
     pub source: &'static str,
 }
 

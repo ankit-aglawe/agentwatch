@@ -46,7 +46,7 @@ impl Microcents {
         Self::from_microcents_per_million(microcents_per_million, tokens)
     }
 
-    /// Higher-resolution variant of `from_per_million` — accepts a price in
+    /// Higher-resolution variant of `from_per_million` - accepts a price in
     /// microcents-per-million-tokens. Use this when the upstream price is
     /// sub-cent (e.g. Gemini Flash at $0.075/M = 750 microcents/M).
     ///

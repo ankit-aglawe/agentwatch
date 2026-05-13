@@ -3,7 +3,7 @@
 //!
 //! Usage: `agentwatch proxy` boots a CONNECT proxy on 127.0.0.1:7777. The
 //! user exports `HTTPS_PROXY=http://localhost:7777` and direct-API calls flow
-//! through us. We READ USAGE FROM RESPONSE HEADERS ONLY by default — never
+//! through us. We READ USAGE FROM RESPONSE HEADERS ONLY by default - never
 //! the request/response bodies. Bodies require `--log-bodies` opt-in, which
 //! writes to `~/.agentwatch/proxy/` with 24h TTL and a loud warning banner.
 //!

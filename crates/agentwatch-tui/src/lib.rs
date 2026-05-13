@@ -1,4 +1,4 @@
-//! Live terminal HUD — the calm front page.
+//! Live terminal HUD - the calm front page.
 //!
 //! Design philosophy (locked in PLAN.md "TUI design spec"):
 //!   - Three sections only: status headline · Right now · Today

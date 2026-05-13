@@ -5,17 +5,17 @@
 //! read these files for the same purpose. We follow the same convention.
 //!
 //! Files probed (in order):
-//!   1. `~/.claude.json` — user settings file
-//!   2. `~/.claude/settings.json` — alt location seen in older versions
+//!   1. `~/.claude.json` - user settings file
+//!   2. `~/.claude/settings.json` - alt location seen in older versions
 //!
-//! We deliberately DO NOT read `~/.claude/.credentials.json` — that file holds
+//! We deliberately DO NOT read `~/.claude/.credentials.json` - that file holds
 //! the OAuth token. Subscription tier (a public-ish fact about the user) lives
 //! in the settings file.
 //!
 //! Field names probed (case-insensitive, with several variants):
 //!   - `subscriptionType`, `subscription_type`, `plan`, `accountType`, `tier`
 //!
-//! Returns `None` if no recognizable plan can be detected — caller falls back
+//! Returns `None` if no recognizable plan can be detected - caller falls back
 //! to a sensible default (Max 20 is the most generous, least alarming).
 
 use std::path::PathBuf;
@@ -144,7 +144,7 @@ fn normalize_plan_string(s: &str) -> Option<DetectedPlan> {
         return Some(DetectedPlan::Max5);
     }
     if lower == "max" || lower.starts_with("max ") || lower.starts_with("max_") {
-        // Unqualified "max" — assume the cheaper Max 5 tier to be conservative.
+        // Unqualified "max" - assume the cheaper Max 5 tier to be conservative.
         return Some(DetectedPlan::Max5);
     }
     if lower.contains("pro") {

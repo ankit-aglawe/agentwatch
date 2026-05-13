@@ -62,7 +62,7 @@ enum Command {
     Export {
         #[arg(long, value_enum, default_value_t = ExportFormat::Html)]
         format: ExportFormat,
-        /// Include code content (paths only by default — Invariant #4).
+        /// Include code content (paths only by default - Invariant #4).
         #[arg(long)]
         with_snippets: bool,
     },
@@ -97,7 +97,7 @@ enum Command {
         action: PricingAction,
     },
     /// Scan installed agents' session logs and ingest events into SQLite.
-    /// Idempotent — safe to re-run; only new events are added.
+    /// Idempotent - safe to re-run; only new events are added.
     Ingest {
         /// Only ingest from this specific agent (e.g. claude-code).
         #[arg(long)]
@@ -126,7 +126,7 @@ enum ConfigAction {
     /// Set spend budgets for API users (today / week / month, in dollars).
     /// Example: agentwatch config budget today=20 week=100 month=400
     Budget {
-        /// Key=value pairs, e.g. today=20 week=100 month=400 — or `show` / `clear`.
+        /// Key=value pairs, e.g. today=20 week=100 month=400 - or `show` / `clear`.
         specs: Vec<String>,
     },
 }
@@ -255,20 +255,78 @@ async fn main() -> Result<()> {
 const BANNER_FULL: &str = include_str!("../../../assets/logo.txt");
 const BANNER_MINI: &str = include_str!("../../../assets/logo-mini.txt");
 
-// Catppuccin Mocha Teal (#94e2d5). Truecolor — works in every modern terminal.
-// Hermes Agent's banner is gold; ours is teal, on purpose.
-const TEAL: &str = "\x1b[38;2;148;226;213m";
+// Brand gradient: subtle vertical green sweep, taken from the TUI's "agent
+// active" bar color (Catppuccin Mocha Green #a6e3a1). Per-block, bottom-up:
+// each contiguous text block (logo, wordmark, tagline) gets its own
+// top-to-bottom sweep so the gradient repeats per letter instead of stretching
+// across the whole banner.
+const GRADIENT_TOP:    (u8, u8, u8) = (0xc4, 0xec, 0xc0); // light green (top of letter)
+const GRADIENT_BOTTOM: (u8, u8, u8) = (0x6f, 0xb2, 0x66); // deep green (bottom of letter)
 const RESET: &str = "\x1b[0m";
 
 fn print_banner(mini: bool) {
     use std::io::IsTerminal;
     let body = if mini { BANNER_MINI } else { BANNER_FULL };
     if std::io::stdout().is_terminal() {
-        print!("{TEAL}{body}{RESET}");
+        print_gradient(body);
     } else {
-        // Piped / redirected — emit plain text so logs and tests stay clean.
+        // Piped / redirected - emit plain text so logs and tests stay clean.
         print!("{body}");
     }
+}
+
+/// Print text with a per-block vertical light-to-dark green gradient.
+/// Blocks are separated by blank lines; each block restarts the gradient at
+/// its top, giving the impression that every letter is lit from above.
+fn print_gradient(body: &str) {
+    let mut out = String::new();
+    let lines: Vec<&str> = body.split('\n').collect();
+    let mut block_start = 0usize;
+    let mut i = 0usize;
+    while i <= lines.len() {
+        let at_end = i == lines.len();
+        let is_blank = !at_end && lines[i].trim().is_empty();
+        if at_end || is_blank {
+            paint_block(&lines[block_start..i], &mut out);
+            if !at_end {
+                out.push('\n');
+            }
+            block_start = i + 1;
+        }
+        i += 1;
+    }
+    print!("{out}");
+}
+
+fn paint_block(block: &[&str], out: &mut String) {
+    let n = block.len();
+    if n == 0 {
+        return;
+    }
+    for (row, line) in block.iter().enumerate() {
+        let t = if n > 1 {
+            row as f32 / (n - 1) as f32
+        } else {
+            0.0
+        };
+        let (r, g, b) = lerp_rgb(GRADIENT_TOP, GRADIENT_BOTTOM, t);
+        // One color per row - every char in this row gets it. This is the
+        // bottom-up gradient: row 0 = light (top of letter), row N = dark.
+        out.push_str(&format!("\x1b[38;2;{};{};{}m", r, g, b));
+        out.push_str(line);
+        out.push_str(RESET);
+        out.push('\n');
+    }
+}
+
+fn lerp_rgb(a: (u8, u8, u8), b: (u8, u8, u8), t: f32) -> (u8, u8, u8) {
+    let t = t.clamp(0.0, 1.0);
+    let mix = |x: u8, y: u8| -> u8 {
+        let xf = x as f32;
+        let yf = y as f32;
+        (xf + (yf - xf) * t).round().clamp(0.0, 255.0) as u8
+    };
+    (mix(a.0, b.0), mix(a.1, b.1), mix(a.2, b.2))
 }
 
 fn run_ingest(agent_filter: Option<&str>, verbose: bool) -> Result<()> {
@@ -307,7 +365,7 @@ fn run_ingest(agent_filter: Option<&str>, verbose: bool) -> Result<()> {
     let mut total_skipped = 0usize;
 
     println!();
-    println!("agentwatch — ingest");
+    println!("agentwatch - ingest");
     println!();
 
     for (name, adapter) in adapters.iter_mut() {
@@ -441,7 +499,7 @@ fn run_pricing(action: PricingAction) -> Result<()> {
             let stale = agentwatch_core::pricing::snapshot_is_stale(60);
             let n = agentwatch_core::pricing::known_model_count();
             println!();
-            println!("agentwatch — pricing snapshot");
+            println!("agentwatch - pricing snapshot");
             println!();
             println!("  snapshot date:  {}", meta.snapshot_date);
             println!("  source:         {}", meta.source_url);
@@ -489,7 +547,7 @@ fn run_demo(seed: Option<u64>) -> Result<()> {
 fn run_doctor() {
     let results = agentwatch_adapters::discover();
     println!();
-    println!("agentwatch — agents detected on this machine");
+    println!("agentwatch - agents detected on this machine");
     println!();
     let now = Utc::now();
     for r in &results {
@@ -500,7 +558,7 @@ fn run_doctor() {
             .unwrap_or_else(|| "(unknown path)".to_string());
         let last = match r.last_activity {
             Some(t) => format_relative(now - t),
-            None => "—".to_string(),
+            None => "-".to_string(),
         };
         let status = match r.status {
             agentwatch_adapters::DetectionStatus::Active => "active",

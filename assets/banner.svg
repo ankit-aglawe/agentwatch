@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 883 370" width="883" height="370"
+     role="img" aria-label="agentwatch - htop for AI coding agents">
+  <defs>
+    <linearGradient id="brand-b0" gradientUnits="userSpaceOnUse"
+                    x1="0" y1="20" x2="0" y2="152">
+      <stop offset="0%"   stop-color="#c4ecc0"/>
+      <stop offset="100%" stop-color="#6fb266"/>
+    </linearGradient>
+    <linearGradient id="brand-b1" gradientUnits="userSpaceOnUse"
+                    x1="0" y1="174" x2="0" y2="306">
+      <stop offset="0%"   stop-color="#c4ecc0"/>
+      <stop offset="100%" stop-color="#6fb266"/>
+    </linearGradient>
+    <linearGradient id="brand-b2" gradientUnits="userSpaceOnUse"
+                    x1="0" y1="328" x2="0" y2="350">
+      <stop offset="0%"   stop-color="#c4ecc0"/>
+      <stop offset="100%" stop-color="#6fb266"/>
+    </linearGradient>
+    <style>
+      text {
+        font-family: 'JetBrains Mono','SF Mono','Fira Code',Menlo,Consolas,monospace;
+        font-size: 16px;
+        font-weight: 600;
+        white-space: pre;
+      }
+    </style>
+  </defs>
+    <text x="24" y="36" fill="url(#brand-b0)" xml:space="preserve">                                     ▗▄██▙▄▄▟██▄▖</text>
+  <text x="24" y="58" fill="url(#brand-b0)" xml:space="preserve">                                  ▄▟██████████████▙▄</text>
+  <text x="24" y="80" fill="url(#brand-b0)" xml:space="preserve">                                ▗█▀▘▗ ▝▜██▀▀██▛▘▗▖▝▀█▖</text>
+  <text x="24" y="102" fill="url(#brand-b0)" xml:space="preserve">                                █▌ █▘   ▜█▄▄██ █▘   ▐█</text>
+  <text x="24" y="124" fill="url(#brand-b0)" xml:space="preserve">                                ▜█▖    ▗█▌  ▐█▖    ▗█▛</text>
+  <text x="24" y="146" fill="url(#brand-b0)" xml:space="preserve">                                 ▝▜████▀▘    ▝▀████▛▘</text>
+  <text x="24" y="168" fill="#c4ecc0" xml:space="preserve"> </text>
+  <text x="24" y="190" fill="url(#brand-b1)" xml:space="preserve"> █████╗  ██████╗ ███████╗███╗   ██╗████████╗██╗    ██╗ █████╗ ████████╗ ██████╗██╗  ██╗</text>
+  <text x="24" y="212" fill="url(#brand-b1)" xml:space="preserve">██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██║    ██║██╔══██╗╚══██╔══╝██╔════╝██║  ██║</text>
+  <text x="24" y="234" fill="url(#brand-b1)" xml:space="preserve">███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ██║ █╗ ██║███████║   ██║   ██║     ███████║</text>
+  <text x="24" y="256" fill="url(#brand-b1)" xml:space="preserve">██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ██║███╗██║██╔══██║   ██║   ██║     ██╔══██║</text>
+  <text x="24" y="278" fill="url(#brand-b1)" xml:space="preserve">██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ╚███╔███╔╝██║  ██║   ██║   ╚██████╗██║  ██║</text>
+  <text x="24" y="300" fill="url(#brand-b1)" xml:space="preserve">╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝</text>
+  <text x="24" y="322" fill="#c4ecc0" xml:space="preserve"> </text>
+  <text x="24" y="344" fill="url(#brand-b2)" xml:space="preserve">                     htop for AI coding agents  ·  local-first  ·  MIT</text>
+</svg>

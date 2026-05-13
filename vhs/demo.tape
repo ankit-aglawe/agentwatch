@@ -1,4 +1,4 @@
-# agentwatch — VHS recording script
+# agentwatch - VHS recording script
 # https://github.com/charmbracelet/vhs
 #
 # Run:    vhs vhs/demo.tape
@@ -41,7 +41,7 @@ Enter
 Sleep 9s
 
 # Optional: hit a key the user would actually press, e.g. to scroll or
-# refresh. Keep it minimal — the chart is the star.
+# refresh. Keep it minimal - the chart is the star.
 Sleep 2s
 
 # Clean exit so the loop is clean (LoopOffset 1 keeps the title slide).

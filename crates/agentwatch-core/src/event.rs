@@ -7,7 +7,7 @@
 //! Content-redaction policy (Invariant #4): user/assistant message bodies are
 //! intentionally absent from this schema. Only `char_count` is stored. There is
 //! no field for the actual text. Adding a `content: String` field requires a
-//! security review — it would allow code/prompts to land in exports and DB.
+//! security review - it would allow code/prompts to land in exports and DB.
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -28,7 +28,7 @@ pub struct AgentEvent {
     pub session_id: String,
     pub timestamp: DateTime<Utc>,
     pub kind: EventKind,
-    /// Working directory basename — feeds the "Hot projects" rollup.
+    /// Working directory basename - feeds the "Hot projects" rollup.
     /// `None` for adapters that don't expose cwd (rare).
     #[serde(default)]
     pub project: Option<String>,
@@ -146,7 +146,7 @@ pub enum SessionEndReason {
 /// README badge table (auto-generated via `xtask gen-readme-badges`).
 ///
 /// Capability is produced by adapters (compile-time constants) and consumed by
-/// surfaces (TUI/webapp/doctor). It is never deserialized — the only direction
+/// surfaces (TUI/webapp/doctor). It is never deserialized - the only direction
 /// is binary → JSON for the webapp. That lets us use `&'static [&'static str]`
 /// for the `missing` slice without heap allocation per adapter.
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
@@ -154,7 +154,7 @@ pub enum SessionEndReason {
 pub enum Capability {
     /// Tokens, tool calls, file edits, model.
     Full,
-    /// Partial — see `missing` for what isn't captured.
+    /// Partial - see `missing` for what isn't captured.
     Partial {
         missing: &'static [&'static str],
     },

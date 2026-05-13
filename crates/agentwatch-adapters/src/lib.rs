@@ -30,7 +30,7 @@ pub enum AdapterError {
     LogDirMissing { agent: Agent },
 }
 
-/// A source the adapter watches — typically a single session log file.
+/// A source the adapter watches - typically a single session log file.
 #[derive(Debug, Clone)]
 pub struct SourcePath {
     pub path: PathBuf,
@@ -62,7 +62,7 @@ pub enum SkipReason {
 pub struct DetectionResult {
     pub agent: Agent,
     pub capability: Capability,
-    /// The path we scanned (if any) — printed in the first-run table.
+    /// The path we scanned (if any) - printed in the first-run table.
     pub session_root: Option<PathBuf>,
     /// Number of session files modified in the last 30 days.
     pub session_count_30d: u32,
@@ -76,7 +76,7 @@ pub struct DetectionResult {
 pub enum DetectionStatus {
     /// Installed AND has session activity in last 30 days. Track by default.
     Active,
-    /// Path exists but no recent sessions. Standby — auto-track once activity appears.
+    /// Path exists but no recent sessions. Standby - auto-track once activity appears.
     InstalledOnly,
     /// Neither binary nor session dir found.
     NotDetected,
@@ -94,7 +94,7 @@ impl DetectionResult {
 
 /// The contract every per-agent adapter implements.
 ///
-/// Adapters are stateful — they remember byte offsets per source so they can
+/// Adapters are stateful - they remember byte offsets per source so they can
 /// resume after restart without re-emitting events. Adapters MUST be `Send`
 /// so they can move between threads in the watcher pool.
 pub trait Adapter: Send {
@@ -125,7 +125,7 @@ pub trait Adapter: Send {
 
     fn discover_sources(&self) -> Result<Vec<SourcePath>, AdapterError>;
 
-    /// Parse one buffered line. Streaming — adapter never reads whole files.
+    /// Parse one buffered line. Streaming - adapter never reads whole files.
     ///
     /// Returns 0 or more `ParseResult`s for a single input line. A Claude Code
     /// assistant message, for example, can produce one `ModelCall` and several
@@ -145,7 +145,7 @@ fn scan_session_root(root: &std::path::Path) -> (DetectionStatus, u32, Option<Da
     let mut count = 0u32;
     let mut latest: Option<DateTime<Utc>> = None;
 
-    // Walk one level deep — adapters typically organize as <root>/<project>/<session>.jsonl
+    // Walk one level deep - adapters typically organize as <root>/<project>/<session>.jsonl
     // or <root>/<session>. Walking depth-2 captures both shapes.
     for top in walk_one_level(root) {
         if top.is_file() {

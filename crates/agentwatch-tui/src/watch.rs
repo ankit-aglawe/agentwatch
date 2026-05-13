@@ -3,7 +3,7 @@
 //! v0.1 design: poll-based. Every `interval` seconds, the watcher walks all
 //! active adapters, runs incremental ingest (source-state skips unchanged
 //! files), and writes new events. The TUI's own 2-second SQLite poll picks up
-//! the changes naturally — no IPC between watcher and TUI beyond the DB.
+//! the changes naturally - no IPC between watcher and TUI beyond the DB.
 //!
 //! v0.2 will swap this for `notify`-based filesystem events with debouncing,
 //! but the polling layer stays as a fallback for FUSE/Docker bind mounts.
@@ -60,7 +60,7 @@ fn default_adapters() -> Vec<(String, Box<dyn Adapter>)> {
 }
 
 /// Run one incremental-ingest pass across all adapters (or one filtered).
-/// Honors source_state — files unchanged since last call are skipped.
+/// Honors source_state - files unchanged since last call are skipped.
 pub fn run_once(
     writer: &mut Writer,
     agent_filter: Option<&str>,

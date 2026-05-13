@@ -31,6 +31,6 @@ dist/
 # Claude Code working dir
 .claude/
 
-# Internal planning docs — kept local, not published
+# Internal planning docs - kept local, not published
 PLAN.md
 PLAN-*.md

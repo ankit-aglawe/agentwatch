@@ -1,6 +1,6 @@
 //! Weekly / monthly markdown summary generator (cherry-pick E3).
 //!
-//! Second shareable artifact for the weekly-review crowd — distinct audience
+//! Second shareable artifact for the weekly-review crowd - distinct audience
 //! from the live TUI HUD. The markdown output is screenshot-friendly and
 //! sometimes paste-into-Slack-friendly.
 //!

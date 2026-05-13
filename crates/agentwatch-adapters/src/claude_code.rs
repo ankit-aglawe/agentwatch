@@ -26,7 +26,7 @@
 //!
 //! Content blocks observed: `text`, `thinking`, `tool_use`, `tool_result`.
 //!
-//! Capability: full — token counts, tool calls, file edits, model name all present.
+//! Capability: full - token counts, tool calls, file edits, model name all present.
 //!
 //! Streaming contract: parser handles one line at a time. The 136MB session
 //! in the wild has tens of thousands of lines; `fs::read_to_string` would OOM.
@@ -273,7 +273,7 @@ impl Adapter for ClaudeCodeAdapter {
 
                 if results.is_empty() {
                     // Assistant line with no usage and no content blocks we
-                    // recognize — emit Unknown so the user knows we saw something
+                    // recognize - emit Unknown so the user knows we saw something
                     // we didn't fully understand.
                     results.push(ParseResult::Event(AgentEvent {
                         id: stable_id(&line_uuid, block_index),
@@ -289,7 +289,7 @@ impl Adapter for ClaudeCodeAdapter {
                     }));
                 }
             }
-            // Known housekeeping line types we deliberately skip — they don't
+            // Known housekeeping line types we deliberately skip - they don't
             // map to user-visible events. Counted as Skip not Unknown so the
             // ingest summary stays honest.
             Some("attachment")
@@ -320,7 +320,7 @@ impl Adapter for ClaudeCodeAdapter {
 }
 
 /// Walk a directory recursively, max-depth 5, collecting `.jsonl` files.
-/// Includes observer/memory tools (claude-mem etc.) — they use real tokens
+/// Includes observer/memory tools (claude-mem etc.) - they use real tokens
 /// too, just label them by tool name in the parser.
 fn walk_jsonl(dir: &std::path::Path, out: &mut Vec<SourcePath>, depth: u8) {
     if depth > 5 {

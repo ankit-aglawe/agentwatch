@@ -17,7 +17,7 @@ pub struct Reader {
 
 impl Reader {
     /// Open the DB read-only. Will succeed even if no writer has touched the file
-    /// yet — we treat missing tables as "no events" so `status` works on day 0.
+    /// yet - we treat missing tables as "no events" so `status` works on day 0.
     pub fn open(path: &Path) -> Result<Self, StoreError> {
         let conn = Connection::open_with_flags(
             path,
@@ -77,7 +77,7 @@ impl Reader {
         }
     }
 
-    /// AI-specific metrics for the TUI summary line — burn rate, cache hit
+    /// AI-specific metrics for the TUI summary line - burn rate, cache hit
     /// rate, I/O ratio, average latency. Computed against the last `minutes`
     /// minutes (typically 30) for a stable signal.
     pub fn live_metrics(&self, minutes: i64) -> Result<LiveMetrics, StoreError> {
@@ -272,7 +272,7 @@ impl Reader {
 
     /// Peak total context size (input + cache_read + cache_write) for a
     /// session. Claude Code's `input_tokens` is just the NEW input for that
-    /// turn — true "context fill" requires summing the cached portions too.
+    /// turn - true "context fill" requires summing the cached portions too.
     pub fn session_peak_context(&self, session_id: &str) -> Result<(u64, String), StoreError> {
         let q = self.conn.query_row(
             "SELECT COALESCE(MAX(
@@ -464,7 +464,7 @@ impl Reader {
 
     /// Per-model breakdown of model_call events in the last `hours` hours.
     /// Filters out the `<synthetic>` placeholder model used by claude-mem and
-    /// other observer-style tools — that's not a real model the user picked.
+    /// other observer-style tools - that's not a real model the user picked.
     pub fn model_breakdown(
         &self,
         hours: i64,
@@ -532,7 +532,7 @@ impl Reader {
     }
 
     /// Per-project breakdown over the last `hours` hours. Uses the indexed
-    /// `project` column directly — much faster than json_extract.
+    /// `project` column directly - much faster than json_extract.
     pub fn project_breakdown(
         &self,
         hours: i64,
@@ -618,7 +618,7 @@ impl Reader {
         });
         if let Ok(rows) = rows {
             for row in rows.flatten() {
-                // Status thresholds — chosen for human glance:
+                // Status thresholds - chosen for human glance:
                 //   < 60s   = ACTIVE (typing in it right now)
                 //   < 30min = idle (paused; might come back)
                 //   else    = done (probably abandoned/finished)
@@ -634,7 +634,7 @@ impl Reader {
                 // Find the most recent model for this session (best-effort).
                 let model = self
                     .latest_model_for_session(&row.0)
-                    .unwrap_or_else(|_| "—".to_string());
+                    .unwrap_or_else(|_| "-".to_string());
                 let peak_context = self
                     .session_peak_context(&row.0)
                     .map(|(t, _)| t)
@@ -643,7 +643,7 @@ impl Reader {
                     session_id: row.0,
                     agent: row.1,
                     model,
-                    project: row.7.unwrap_or_else(|| "—".into()),
+                    project: row.7.unwrap_or_else(|| "-".into()),
                     last_event_ms: row.2,
                     first_event_ms: row.3,
                     total_tokens: row.4.max(0) as u64,
@@ -656,7 +656,7 @@ impl Reader {
             }
         }
 
-        // Looping detection — conservative, only flag genuine stuck patterns.
+        // Looping detection - conservative, only flag genuine stuck patterns.
         // See `session_looping_score` for the criteria. Threshold of 6+ to
         // avoid flagging normal iterative debugging.
         for session in out.iter_mut() {
@@ -681,24 +681,24 @@ impl Reader {
         );
         match q {
             Ok(Some(m)) => Ok(m),
-            Ok(None) => Ok("—".to_string()),
-            Err(rusqlite::Error::QueryReturnedNoRows) => Ok("—".to_string()),
+            Ok(None) => Ok("-".to_string()),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok("-".to_string()),
             Err(e) => Err(StoreError::Sqlite(e)),
         }
     }
 
     /// Returns the max repetition count of any read-style (tool, target) pair
-    /// observed in the last 90 seconds — a tight window typical of genuine
+    /// observed in the last 90 seconds - a tight window typical of genuine
     /// "stuck in a loop" patterns.
     ///
     /// Heuristic guards against false positives:
-    ///   - Excludes Edit / Write / MultiEdit — these legitimately repeat
+    ///   - Excludes Edit / Write / MultiEdit - these legitimately repeat
     ///     during iterative refactoring; we can't see the diff to know if
     ///     the content actually changed.
-    ///   - Requires `target` to be non-null — null-target tools (like
+    ///   - Requires `target` to be non-null - null-target tools (like
     ///     TaskUpdate) aren't loop signals.
-    ///   - Tight window (90s) — real loops fire in bursts, not over 5 min.
-    ///   - Threshold of 6+ at the call site — distinguishes "Claude looked
+    ///   - Tight window (90s) - real loops fire in bursts, not over 5 min.
+    ///   - Threshold of 6+ at the call site - distinguishes "Claude looked
     ///     at this twice while debugging" from "Claude is stuck."
     ///
     /// Note: this is intentionally conservative. Better to miss some real
@@ -729,13 +729,13 @@ impl Reader {
     }
 
     /// Per-agent summary for the top-of-screen bars. One row per detected agent
-    /// (even if currently inactive — INACTIVE status).
+    /// (even if currently inactive - INACTIVE status).
     pub fn agent_summary(&self, hours_5h: i64) -> Result<Vec<AgentSummary>, StoreError> {
         let now_ms = chrono::Utc::now().timestamp_millis();
         let start_5h = now_ms - hours_5h * 3600 * 1000;
         let start_5m = now_ms - 5 * 60 * 1000;
 
-        // Discover the set of agents we know about (from adapters via doctor —
+        // Discover the set of agents we know about (from adapters via doctor -
         // but for now we just SELECT DISTINCT from events).
         let q = self.conn.prepare(
             "SELECT agent,
@@ -860,7 +860,7 @@ impl Reader {
     }
 }
 
-/// One day's cost totals — used by the 7-day trend sparkline + comparison.
+/// One day's cost totals - used by the 7-day trend sparkline + comparison.
 #[derive(Debug, Clone)]
 pub struct DailyCost {
     pub date_local: String,
@@ -868,7 +868,7 @@ pub struct DailyCost {
     pub event_count: u64,
 }
 
-/// Status of a single session — drives the row color in the sessions table.
+/// Status of a single session - drives the row color in the sessions table.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionStatus {
     Active,
@@ -907,7 +907,7 @@ pub struct SessionSummary {
     pub peak_context: u64,
 }
 
-/// Live status of one agent — drives the top-bar color.
+/// Live status of one agent - drives the top-bar color.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AgentLiveStatus {
     /// Heavy burn in the last 5 minutes.
@@ -1007,7 +1007,7 @@ impl WindowTokens {
     }
 }
 
-/// Aggregate view of "today" — feeds the front-page Today pane.
+/// Aggregate view of "today" - feeds the front-page Today pane.
 #[derive(Debug, Clone, Default)]
 pub struct TodaySummary {
     pub event_count: u64,
@@ -1088,7 +1088,7 @@ fn derive_verb(kind: &str, payload_json: &str) -> (String, Option<String>) {
     }
 }
 
-/// One row from the `events` table — the latest activity across all agents.
+/// One row from the `events` table - the latest activity across all agents.
 #[derive(Debug, Clone)]
 pub struct LatestActivity {
     pub agent: String,

@@ -5,7 +5,7 @@
 //!   - Windows: `%APPDATA%\Cursor\logs\`
 //!   - Linux: `~/.config/Cursor/logs/`
 //!
-//! Capability: partial — model + approximate tokens; per-tool-call data is
+//! Capability: partial - model + approximate tokens; per-tool-call data is
 //! inconsistent across Cursor versions.
 
 use agentwatch_core::{Agent, Capability};

@@ -1,0 +1,90 @@
+name: Release
+
+# Build + publish prebuilt binaries on tag push (e.g. `git tag v0.1.0 && git push --tags`).
+# Asset names match what install.sh / install.ps1 expect:
+#   agentwatch-<target>.tar.gz     (linux + macos)
+#   agentwatch-<target>.zip        (windows)
+#   <each>.sha256                  (checksum sibling)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-13
+          - target: aarch64-apple-darwin
+            os: macos-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Install cross-compile linker (linux aarch64)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+          mkdir -p .cargo
+          cat >> .cargo/config.toml <<'EOF'
+          [target.aarch64-unknown-linux-gnu]
+          linker = "aarch64-linux-gnu-gcc"
+          EOF
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }} -p agentwatch-cli
+
+      - name: Package (unix)
+        if: matrix.os != 'windows-latest'
+        shell: bash
+        run: |
+          name="agentwatch-${{ matrix.target }}"
+          tar czf "${name}.tar.gz" -C "target/${{ matrix.target }}/release" agentwatch
+          if command -v sha256sum >/dev/null; then
+            sha256sum "${name}.tar.gz" > "${name}.tar.gz.sha256"
+          else
+            shasum -a 256 "${name}.tar.gz" > "${name}.tar.gz.sha256"
+          fi
+
+      - name: Package (windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $Name = "agentwatch-${{ matrix.target }}"
+          Compress-Archive -Path "target/${{ matrix.target }}/release/agentwatch.exe" -DestinationPath "$Name.zip"
+          (Get-FileHash -Algorithm SHA256 "$Name.zip").Hash.ToLower() + "  $Name.zip" | Out-File -Encoding ascii "$Name.zip.sha256"
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            agentwatch-${{ matrix.target }}.tar.gz
+            agentwatch-${{ matrix.target }}.tar.gz.sha256
+            agentwatch-${{ matrix.target }}.zip
+            agentwatch-${{ matrix.target }}.zip.sha256
+          fail_on_unmatched_files: false
+          generate_release_notes: true

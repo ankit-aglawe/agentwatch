@@ -2,7 +2,7 @@
 """
 Convert a PNG into block-ASCII using Unicode quadrant blocks (▘▝▖▗▀▄▌▐▙▟▛▜█).
 
-Each output character represents a 2×2 pixel block — so a target of W cols ×
+Each output character represents a 2×2 pixel block - so a target of W cols ×
 H rows expands to a 2W × 2H pixel sampling grid. This is roughly what `chafa`
 does in its block-only mode.
 
@@ -58,7 +58,7 @@ def render(mask: Image.Image, cols: int, rows: int) -> str:
             bl = 4 if pixels[cx * 2, cy * 2 + 1] else 0
             br = 8 if pixels[cx * 2 + 1, cy * 2 + 1] else 0
             line.append(QUADRANTS[tl + tr + bl + br])
-        # Pad to full width (don't rstrip) — keeps rows aligned when the logo
+        # Pad to full width (don't rstrip) - keeps rows aligned when the logo
         # is composited next to other text.
         out_lines.append("".join(line))
     return "\n".join(out_lines)

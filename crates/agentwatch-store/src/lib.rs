@@ -31,7 +31,7 @@ use thiserror::Error;
 pub enum StoreError {
     #[error("sqlite: {0}")]
     Sqlite(#[from] rusqlite::Error),
-    #[error("disk full — pausing writes")]
+    #[error("disk full - pausing writes")]
     DiskFull,
     #[error("another agentwatch instance is already writing (pid {pid})")]
     AlreadyLocked { pid: u32 },

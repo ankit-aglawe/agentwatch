@@ -7,8 +7,8 @@
 //! we show absolute token volumes and base the calm headline on whether the
 //! user is currently active or idle.
 //!
-//! When Anthropic publishes real numbers — or when we add per-user calibration
-//! from observed rate-limit responses — we'll plug accurate cap math back in.
+//! When Anthropic publishes real numbers - or when we add per-user calibration
+//! from observed rate-limit responses - we'll plug accurate cap math back in.
 
 use chrono::Duration;
 
@@ -38,7 +38,7 @@ impl Default for Plan {
             Some(agentwatch_core::plan_detect::DetectedPlan::Pro) => Plan::Pro,
             Some(agentwatch_core::plan_detect::DetectedPlan::Max5) => Plan::Max5,
             Some(agentwatch_core::plan_detect::DetectedPlan::Max20) => Plan::Max20,
-            // Team and Enterprise default to Max 20 — closest fit until we
+            // Team and Enterprise default to Max 20 - closest fit until we
             // expand the Plan enum.
             Some(_) => Plan::Max20,
             None => Plan::Max20,
@@ -54,7 +54,7 @@ pub enum HealthLevel {
     Idle,
     /// At least one event in the last 5 minutes.
     Active,
-    /// Heavy activity — > 50k tokens in the last 5 minutes.
+    /// Heavy activity - > 50k tokens in the last 5 minutes.
     Heavy,
 }
 
@@ -73,7 +73,7 @@ impl HealthLevel {
             HealthLevel::Quiet => "Quiet so far.",
             HealthLevel::Idle => "You're good.",
             HealthLevel::Active => "Claude Code is working.",
-            HealthLevel::Heavy => "Heavy usage — keep an eye on it.",
+            HealthLevel::Heavy => "Heavy usage - keep an eye on it.",
         }
     }
 }
@@ -84,9 +84,9 @@ pub struct RunwayState {
     pub plan: Plan,
     /// Tokens used in the current 5-hour window (input + output).
     pub tokens_5h: u64,
-    /// Tokens used in the last 30 minutes — the burn-rate sample.
+    /// Tokens used in the last 30 minutes - the burn-rate sample.
     pub tokens_30m: u64,
-    /// Tokens used in the last 5 minutes — drives the activity state.
+    /// Tokens used in the last 5 minutes - drives the activity state.
     pub tokens_5m: u64,
     /// Seconds since the most recent event, if known.
     pub seconds_idle: Option<u64>,
@@ -130,7 +130,7 @@ impl RunwayState {
         match self.level {
             HealthLevel::Quiet => "no events yet".to_string(),
             HealthLevel::Heavy => format!(
-                "{} tokens in the last 5 minutes — heavy chunk",
+                "{} tokens in the last 5 minutes - heavy chunk",
                 format_short_tokens(self.tokens_5m)
             ),
             HealthLevel::Active => format!(
@@ -150,7 +150,7 @@ impl RunwayState {
         match self.level {
             HealthLevel::Quiet => "Start using Claude Code and this will fill in.".to_string(),
             _ => format!(
-                "Claude Code — {} tokens in the last 5 hours ({} plan)",
+                "Claude Code - {} tokens in the last 5 hours ({} plan)",
                 total_5h,
                 self.plan.label()
             ),
