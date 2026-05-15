@@ -1044,13 +1044,15 @@ fn draw_sessions(f: &mut Frame, area: Rect, app: &App) {
 
     // PROJECT column hugs the longest project name so CTX sits right next to
     // it. The HSPACING column gap already provides the visual breathing room.
+    // Floor of 7 reserves room for the "PROJECT" header label; no inflated
+    // minimum that leaves trailing whitespace when every project is short.
     let project_w = app
         .sessions
         .iter()
         .map(|s| s.project.chars().count())
         .max()
-        .unwrap_or(20)
-        .clamp(10, 40) as u16;
+        .unwrap_or(7)
+        .clamp(7, 40) as u16;
 
     let widths = [
         Constraint::Length(4),          // AGNT
