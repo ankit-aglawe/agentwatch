@@ -34,6 +34,11 @@ const BRAND_CLAUDE: Color = Color::Rgb(203, 166, 247);
 
 const BORDER: BorderType = BorderType::Rounded;
 
+/// Horizontal gutter (in terminal cells) between adjacent boxes / cells in any
+/// horizontal Layout. Define it once here so every row in the TUI shares the
+/// same rhythm.
+const HSPACING: u16 = 1;
+
 pub fn draw(f: &mut Frame, app: &App) {
     let area = f.area();
 
@@ -88,7 +93,9 @@ pub fn draw(f: &mut Frame, app: &App) {
             Constraint::Length(2),                        // power-user metrics
             Constraint::Length(loop_warning_height(app)),
             Constraint::Min(8),                           // sessions table
+            Constraint::Length(1),                        // padding below sessions
             Constraint::Length(11),                       // chart row
+            Constraint::Length(1),                        // padding below chart row
             Constraint::Length(11),                       // rollup row
         ])
         .split(inner);
@@ -99,8 +106,8 @@ pub fn draw(f: &mut Frame, app: &App) {
     draw_metrics_line(f, chunks[5], app);
     draw_loop_warning(f, chunks[6], app);
     draw_middle_row(f, chunks[7], app);
-    draw_chart_row(f, chunks[8], app);
-    draw_rollup_row(f, chunks[9], app);
+    draw_chart_row(f, chunks[9], app);
+    draw_rollup_row(f, chunks[11], app);
 }
 
 fn live_signal_height(app: &App) -> u16 {
@@ -166,7 +173,7 @@ fn draw_middle_row(f: &mut Frame, area: Rect, app: &App) {
             Constraint::Percentage(70),
             Constraint::Percentage(30),
         ])
-        .spacing(1)
+        .spacing(HSPACING)
         .split(area);
     draw_sessions(f, cells[0], app);
     draw_cost_insights(f, cells[1], app);
@@ -681,7 +688,7 @@ fn draw_agent_row(f: &mut Frame, area: Rect, a: &AgentSummary, max_tokens: u64) 
             Constraint::Length(9),   // cost
             Constraint::Length(10),  // status
         ])
-        .spacing(1)
+        .spacing(HSPACING)
         .split(area);
 
     let agent_color = brand_color(&a.agent);
@@ -781,6 +788,7 @@ fn draw_today_summary(f: &mut Frame, area: Rect, app: &App) {
             Constraint::Percentage(20),
             Constraint::Percentage(20),
         ])
+        .spacing(HSPACING)
         .split(area);
 
     let stats = [
@@ -1058,7 +1066,7 @@ fn draw_sessions(f: &mut Frame, area: Rect, app: &App) {
 
     let table = Table::new(rows, widths)
         .header(header)
-        .column_spacing(2)
+        .column_spacing(HSPACING)
         .flex(Flex::Start)
         .block(block);
     f.render_widget(table, area);
@@ -1163,18 +1171,29 @@ fn session_row(s: &SessionSummary, now: DateTime<Utc>) -> Row<'_> {
 // ============ CHART ROW ============
 
 fn draw_chart_row(f: &mut Frame, area: Rect, app: &App) {
-    let cells = Layout::default()
+    // Mirror the middle row's 70/30 split so Tokens/min + Tools occupy the same
+    // horizontal span as the Sessions table above, and Models lines up with
+    // Cost insights.
+    let outer = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
-            Constraint::Percentage(40),
-            Constraint::Percentage(30),
+            Constraint::Percentage(70),
             Constraint::Percentage(30),
         ])
+        .spacing(HSPACING)
         .split(area);
-    draw_sparkline(f, cells[0], app);
+    let left = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage(60),
+            Constraint::Percentage(40),
+        ])
+        .spacing(HSPACING)
+        .split(outer[0]);
+    draw_sparkline(f, left[0], app);
     draw_bar_chart(
         f,
-        cells[1],
+        left[1],
         "Tools",
         "24h",
         &app.tool_breakdown,
@@ -1183,7 +1202,7 @@ fn draw_chart_row(f: &mut Frame, area: Rect, app: &App) {
     );
     draw_bar_chart(
         f,
-        cells[2],
+        outer[1],
         "Models",
         "today",
         &app.model_breakdown,
@@ -1196,6 +1215,7 @@ fn draw_rollup_row(f: &mut Frame, area: Rect, app: &App) {
     let cells = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .spacing(HSPACING)
         .split(area);
     draw_bar_chart(
         f,
