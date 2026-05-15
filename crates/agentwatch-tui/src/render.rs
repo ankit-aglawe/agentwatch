@@ -1042,16 +1042,15 @@ fn draw_sessions(f: &mut Frame, area: Rect, app: &App) {
         .map(|s| session_row(s, now))
         .collect();
 
-    // PROJECT column hugs the longest project name so AGE sits right next to
-    // it. No more "where did the right half of the row go" gap.
+    // PROJECT column hugs the longest project name so CTX sits right next to
+    // it. The HSPACING column gap already provides the visual breathing room.
     let project_w = app
         .sessions
         .iter()
         .map(|s| s.project.chars().count())
         .max()
         .unwrap_or(20)
-        .clamp(10, 40) as u16
-        + 1; // a single character of breathing room
+        .clamp(10, 40) as u16;
 
     let widths = [
         Constraint::Length(4),          // AGNT
