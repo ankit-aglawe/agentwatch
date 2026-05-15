@@ -1044,20 +1044,22 @@ fn draw_sessions(f: &mut Frame, area: Rect, app: &App) {
 
     // PROJECT column hugs the longest project name so CTX sits right next to
     // it. The HSPACING column gap already provides the visual breathing room.
-    // Floor of 7 reserves room for the "PROJECT" header label; no inflated
-    // minimum that leaves trailing whitespace when every project is short.
+    // Floor of 7 reserves room for the "PROJECT" header label; ceiling of 12
+    // prevents one long real-world project name (e.g. "verofy-2-merchant-portal")
+    // from inflating the column for every other short-named row. Names longer
+    // than 12 chars are truncated with an ellipsis in session_row.
     let project_w = app
         .sessions
         .iter()
         .map(|s| s.project.chars().count())
         .max()
         .unwrap_or(7)
-        .clamp(7, 40) as u16;
+        .clamp(7, 20) as u16;
 
     let widths = [
         Constraint::Length(4),          // AGNT
-        Constraint::Length(26),         // MODEL
-        Constraint::Length(project_w),  // PROJECT (hugs longest name)
+        Constraint::Length(30),         // MODEL (fits common claude-* IDs)
+        Constraint::Length(project_w),  // PROJECT (hugs longest name, max 20)
         Constraint::Length(8),          // CTX
         Constraint::Length(6),          // AGE
         Constraint::Length(10),         // TOKENS
@@ -1068,7 +1070,10 @@ fn draw_sessions(f: &mut Frame, area: Rect, app: &App) {
     let table = Table::new(rows, widths)
         .header(header)
         .column_spacing(HSPACING)
-        .flex(Flex::Start)
+        // SpaceBetween distributes leftover panel width evenly across every
+        // column gap, so the table fills the panel edge-to-edge instead of
+        // collapsing all the slack into one big trailing whitespace gap.
+        .flex(Flex::SpaceBetween)
         .block(block);
     f.render_widget(table, area);
 }
@@ -1118,11 +1123,11 @@ fn session_row(s: &SessionSummary, now: DateTime<Utc>) -> Row<'_> {
                 .add_modifier(Modifier::BOLD),
         )),
         Cell::from(Span::styled(
-            truncate(&s.model, 24),
+            truncate(&s.model, 60),
             Style::default().fg(MOCHA_LAVENDER),
         )),
         Cell::from(Span::styled(
-            s.project.clone(),
+            truncate(&s.project, 20),
             Style::default().fg(MOCHA_TEAL),
         )),
         Cell::from(
@@ -1256,19 +1261,17 @@ fn draw_hot_files(f: &mut Frame, area: Rect, app: &App) {
         return;
     }
 
-    let max = app
-        .hot_files
-        .iter()
-        .map(|b| b.count)
-        .max()
-        .unwrap_or(1)
-        .max(1);
     let total: u64 = app.hot_files.iter().map(|b| b.count).sum();
 
     // Two rows per entry: file path on line 1, bar + stats on line 2.
     // Fits 4 entries in 9 rows comfortably with a blank line in between.
     let label_max = inner.width as usize - 2;
-    let bar_width = (inner.width as usize / 2).clamp(10, 30);
+    // Bar fills the row minus the fixed-width trailing text. Reserve 2 chars
+    // for the leading indent, 5 for " XXX%", and 12 for "  9999 edits".
+    let trailing = 2 + 5 + 12;
+    let bar_width = (inner.width as usize)
+        .saturating_sub(trailing)
+        .max(10);
 
     let mut lines: Vec<Line> = Vec::new();
     let entries_visible = ((inner.height as usize) / 2).max(1);
@@ -1280,17 +1283,21 @@ fn draw_hot_files(f: &mut Frame, area: Rect, app: &App) {
                 .fg(MOCHA_TEAL)
                 .add_modifier(Modifier::BOLD),
         )));
-        // Bar + edits + percentage row
-        let frac = b.count as f64 / max as f64;
-        let bar = horizontal_bar(frac, bar_width);
-        let pct = if total > 0 {
-            (b.count as f64 / total as f64 * 100.0).round() as u16
+        // Bar + edits + percentage row. Bar fraction and label percentage must
+        // share the same denominator (total) so the visual fill matches the
+        // number the user reads. Using max would make the leader always render
+        // a full bar regardless of its real share.
+        let frac = if total > 0 {
+            b.count as f64 / total as f64
         } else {
-            0
+            0.0
         };
+        let (filled, track) = bar_parts(frac, bar_width);
+        let pct = (frac * 100.0).round() as u16;
         lines.push(Line::from(vec![
             Span::styled("  ", Style::default()),
-            Span::styled(bar, Style::default().fg(MOCHA_YELLOW)),
+            Span::styled(filled, Style::default().fg(MOCHA_YELLOW)),
+            Span::styled(track, Style::default().fg(MOCHA_SURFACE)),
             Span::styled(
                 format!(" {:>3}%", pct),
                 Style::default()
@@ -1451,7 +1458,6 @@ fn draw_bar_chart(
         BreakdownKind::Tokens => b.tokens,
         BreakdownKind::Cost => b.tokens,
     };
-    let max = items.iter().map(value).max().unwrap_or(1).max(1);
     let total: u64 = items.iter().map(value).sum();
 
     // Compute responsive widths from the actual inner area.
@@ -1480,27 +1486,32 @@ fn draw_bar_chart(
     let mut lines: Vec<Line> = Vec::with_capacity(items.len());
     for b in items.iter().take(rows_visible) {
         let v = value(b);
-        let frac = v as f64 / max as f64;
-        let pct = if total > 0 {
-            (v as f64 / total as f64 * 100.0).round() as u16
+        // Bar fraction and label percentage share the same denominator (total)
+        // so the bar visually matches the number the user reads. Using max
+        // would make the leader render a full bar regardless of real share.
+        let frac = if total > 0 {
+            v as f64 / total as f64
         } else {
-            0
+            0.0
         };
+        let pct = (frac * 100.0).round() as u16;
         let value_str = match kind {
             BreakdownKind::Count => format!("{}", v),
             BreakdownKind::Tokens => format_tokens(v),
             BreakdownKind::Cost => format_cost(v),
         };
-        // Sub-character precision: 8 levels per character (▏▎▍▌▋▊▉█).
-        // gives smooth bar edges and creates natural visual rhythm vertically.
-        let bar = horizontal_bar(frac, bar_width);
+        // Sub-character precision: 8 levels per character (▏▎▍▌▋▊▉█) for
+        // smooth bar edges. Empty portion renders as a muted ░ track so the
+        // bar reads as a track + fill, not "filled blob + invisible space".
+        let (filled, track) = bar_parts(frac, bar_width);
         lines.push(Line::from(vec![
             Span::styled(
                 format!("{:<width$}", truncate(&b.label, label_width), width = label_width),
                 Style::default().fg(MOCHA_TEXT),
             ),
             Span::raw(" "),
-            Span::styled(bar, Style::default().fg(bar_color)),
+            Span::styled(filled, Style::default().fg(bar_color)),
+            Span::styled(track, Style::default().fg(MOCHA_SURFACE)),
             Span::styled(
                 format!(" {:>3}%", pct),
                 Style::default().fg(MOCHA_LAVENDER).add_modifier(Modifier::BOLD),
@@ -1517,6 +1528,32 @@ fn draw_bar_chart(
 
 /// Render a horizontal bar with 8 sub-character levels per cell.
 /// Empty cells render as space (not dots) for a cleaner Charm look.
+/// Returns the bar split into (filled, track) so each can be styled separately:
+/// the filled portion in the bar color, the track in a muted surface color so
+/// the empty portion reads as a track rather than blank panel whitespace.
+fn bar_parts(frac: f64, width: usize) -> (String, String) {
+    if width == 0 {
+        return (String::new(), String::new());
+    }
+    let frac = frac.clamp(0.0, 1.0);
+    let total_eighths = (frac * (width * 8) as f64).round() as usize;
+    let full = total_eighths / 8;
+    let partial = total_eighths % 8;
+
+    let mut filled = String::with_capacity(width * 3);
+    for _ in 0..full.min(width) {
+        filled.push('█');
+    }
+    let used = if full < width && partial > 0 {
+        filled.push(eighth_block(partial as u8));
+        full + 1
+    } else {
+        full
+    };
+    let track: String = std::iter::repeat('░').take(width.saturating_sub(used)).collect();
+    (filled, track)
+}
+
 fn horizontal_bar(frac: f64, width: usize) -> String {
     if width == 0 {
         return String::new();
